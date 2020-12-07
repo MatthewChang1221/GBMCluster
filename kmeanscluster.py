@@ -6,6 +6,7 @@ import matplotlib.pyplot as plot
 from mpl_toolkits.mplot3d import Axes3D
 
 
+
 def euclideanDistance (point1, point2):
     distance = 0
 
@@ -59,7 +60,8 @@ class KMeans:
 
         numDim = len(PCADataNP[1]) - 1
         minMaxList = minMax(PCADataDF)
-
+        print("MinMax")
+        print(minMaxList)
         #so for every kth cluster, we need to generate a point at random in numDim dimensions
         for k in range(self.k):
             self.centroids[k+1] = []
@@ -122,20 +124,35 @@ class KMeans:
                 #print(sum[centroid])
                 #averageOfCentroid = []
                 numPoints = len(self.clusters[centroid])
-                print("Number of Points in the old centroid: %s" % (numPoints))
-                print("\n\n\nOld centroid points")
-                print(self.clusters[centroid])
-                for data in self.clusters[centroid]:
 
-                    for index in range (1, numDim + 1):
-                       sum[centroid][index - 1] += float(data[index])
+                #if there are no points assigned to the centroid: assign a new random centroid
+                if numPoints == 0:
+                    dim = 0
+                    for interval in minMaxList :
+                        randomPoint = random.uniform(interval[0], interval[1])
+                        print("\n\n\n\nRANDOM POINT")
+                        print(randomPoint)
+                        print(self.centroids[centroid])
+                        self.centroids[centroid][dim] = randomPoint
+                        dim += 1
+                else:
 
-                averageOfCentroid = [x / numPoints for x in sum[centroid]]
-                print("\n\n\nSUM OF NEW CENTROID")
-                print(sum[centroid])
-                print("\n\n\nAVERAGE OF NEW CENTROID")
-                print(averageOfCentroid)
-                self.centroids[centroid] = averageOfCentroid
+                    print("Number of Points in the old centroid: %s" % (numPoints))
+                    print("\n\n\nOld centroid points")
+
+
+                    print(self.clusters[centroid])
+                    for data in self.clusters[centroid]:
+
+                        for index in range (1, numDim + 1):
+                           sum[centroid][index - 1] += float(data[index])
+
+                    averageOfCentroid = [x / numPoints for x in sum[centroid]]
+                    print("\n\n\nSUM OF NEW CENTROID")
+                    print(sum[centroid])
+                    print("\n\n\nAVERAGE OF NEW CENTROID")
+                    print(averageOfCentroid)
+                    self.centroids[centroid] = averageOfCentroid
 
             print(oldCentroids)
             print(self.centroids)
@@ -168,7 +185,7 @@ class KMeans:
             for features in self.clusters[data]:
                 ax.scatter(features[1], features[2], features[3], color = color, s = 30)
 
-                """
+                """  2D PLOTTING
         for centroid in self.centroids:
             plot.scatter(self.centroids[centroid][0], self.centroids[centroid][1], s = 130, marker = "x")
 
@@ -179,13 +196,39 @@ class KMeans:
                 """
         plot.show()
 
+        #function to determine best number of K means --> via k means from 1 to kmax
+        #elbow method using WWS, within-cluster-sum of squaured errors
+
+def WSS(kmax, DF, NP):
+    sse = []
+    for k in range(1, kmax + 1):
+        test = KMeans(k, 0.00001, 100)
+        test.cluster(DF, NP)
+        centroids = test.centroids
+        clusters = test.clusters
+        currentsse = 0
+        for centroid in clusters:
+            for point in clusters[centroid]:
+
+
+                currentsse += euclideanDistance(centroids[centroid], point[1:])
+
+        sse.append(currentsse)
+    print("\n\n\nSSE:")
+    print(sse)
+
+    plot.plot(range(1, kmax + 1), sse, 'bx-')
+    plot.show()
+    return sse
+
+
 
 def main():
     DF, NP = importData("PCA50.csv")
-
-    test = KMeans(5, 0.00001, 100)
-    test.cluster(DF, NP)
-    test.plotting(NP)
+    WSS(7, DF, NP)
+    #test = KMeans(5, 0.00001, 100)
+    #test.cluster(DF, NP)
+    #test.plotting(NP)
 
 if __name__ == "__main__":
     main()
