@@ -174,7 +174,7 @@ class KMeans:
                 break
 
     def plotting(self, data):
-        colors = 10 * ["r", "g", "c", "b", "k"]
+        colors = 10 * ["r", "y", "b", "g"]
         fig = plot.figure()
         ax = Axes3D(fig)
 
@@ -185,7 +185,7 @@ class KMeans:
             for features in self.clusters[data]:
                 ax.scatter(features[1], features[2], features[3], color = color, s = 30)
 
-                """  2D PLOTTING
+        '''2D PLOTTING
         for centroid in self.centroids:
             plot.scatter(self.centroids[centroid][0], self.centroids[centroid][1], s = 130, marker = "x")
 
@@ -193,7 +193,8 @@ class KMeans:
             color = colors[data]
             for features in self.clusters[data]:
                 plot.scatter(features[1], features[2], color = color, s = 30)
-                """
+                '''
+                
         plot.show()
 
         #function to determine best number of K means --> via k means from 1 to kmax
@@ -218,17 +219,21 @@ def WSS(kmax, DF, NP):
     print(sse)
 
     plot.plot(range(1, kmax + 1), sse, 'bx-')
-    plot.show()
+    # plot.show()
     return sse
 
 
 
-def main():
-    DF, NP = importData("PCA50.csv")
+def main(validation):
+    if validation:
+        file = 'validationPCA90.csv'
+    else:
+        file = 'PCA90.csv'
+    DF, NP = importData(file)
     WSS(7, DF, NP)
-    #test = KMeans(5, 0.00001, 100)
-    #test.cluster(DF, NP)
-    #test.plotting(NP)
+    test = KMeans(4, 0.00001, 100)
+    test.cluster(DF, NP)
+    test.plotting(NP)
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
