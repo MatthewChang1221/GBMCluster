@@ -95,7 +95,7 @@ class PCA:
         self.PCA75 = pd.DataFrame(pca_GCM_75, columns=['PC1', 'PC2', 'PC3'],index=df_75.index)
         self.PCA90 = pd.DataFrame(pca_GCM_90, columns=['PC1', 'PC2', 'PC3'],index=df_90.index)
 
-        print('Explained variation per principal component: {}'.format(pca.explained_variance_ratio_)) # this for the 90%
+        # print('Explained variation per principal component: {}'.format(pca.explained_variance_ratio_)) # this for the 90%
 
         # To plot just uncomment and change the value of the df to the variation level you want
 

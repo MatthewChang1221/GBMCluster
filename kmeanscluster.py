@@ -218,8 +218,9 @@ def WSS(kmax, DF, NP):
     # print("\n\n\nSSE:")
     # print(sse)
 
-    # plot.plot(range(1, kmax + 1), sse, 'bx-')
-    # plot.show()
+    plot.clf()
+    plot.plot(range(1, kmax + 1), sse, 'bx-')
+    plot.savefig('elbow.png')
     return sse
 
 

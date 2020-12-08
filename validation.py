@@ -4,7 +4,7 @@ import kmeanscluster
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-def getsubtypes():
+def getmeta():
 	f = open('validation_GSE72951_series_matrix.txt')
 	lines = f.readlines()
 	i=0
@@ -20,10 +20,18 @@ def getsubtypes():
 				subtype = [str(i).replace('tcga subtype: ', '') for i in pre]
 				subtype = [str(i).replace('"', '') for i in subtype]
 				subtype = [str(i).replace('\n', '') for i in subtype]
+			if 'survival (months)' in line:
+				pre = line.split('\t')
+				pre.remove('!Sample_characteristics_ch1')
+				surv = [str(i).replace('survival (months): ', '') for i in pre]
+				surv = [str(i).replace('sample type: FFPE', '-100') for i in surv]
+				surv = [str(i).replace('"', '') for i in surv]
+				surv = [str(i).replace('\n', '') for i in surv]
 	f.close()
 
 	subtypedict = {samples[i]: subtype[i] for i in range(len(samples))}
-	return subtypedict
+	survivaldict = {samples[i]: surv[i] for i in range(len(samples))}
+	return subtypedict, survivaldict
 
 def plotreal(subtypedict):
 	df = pd.read_csv('validationPCA90.csv')
@@ -47,11 +55,11 @@ def plotreal(subtypedict):
 
 def main():
 	valid = PCA()
-	# valid.datareduction(True)
+	valid.datareduction(True)
 	# valid.PCA90.to_csv('validationPCA90.csv')
 	# valid.PCA75.to_csv('validationPCA75.csv')
 	# valid.PCA50.to_csv('validationPCA50.csv')
-	subtypedict = getsubtypes()
+	subtypedict, survivaldict = getmeta()
 	# plotreal(subtypedict)
 	clusters = kmeanscluster.main(True)
-	return clusters, subtypedict
+	return clusters, subtypedict, survivaldict
