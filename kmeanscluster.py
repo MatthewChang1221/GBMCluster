@@ -60,8 +60,8 @@ class KMeans:
 
         numDim = len(PCADataNP[1]) - 1
         minMaxList = minMax(PCADataDF)
-        print("MinMax")
-        print(minMaxList)
+        # print("MinMax")
+        # print(minMaxList)
         #so for every kth cluster, we need to generate a point at random in numDim dimensions
         for k in range(self.k):
             self.centroids[k+1] = []
@@ -76,11 +76,11 @@ class KMeans:
 
         #we go either until our centroids change by less than self.tolerance, or until we hit self.maxIters # of iterations
         for i in range(self.maxIters):
-            print("\n\n\n\n----------------------------------NOW AT ITERATION STEP: %d ---------------------------\n\n\n\n\n" % (i))
-            print("CURRENT CENTROIDS\n\n")
-            print(self.centroids)
-            print("\n\n\n CURRENT CLUSTERS\n\n")
-            print(self.clusters)
+            # print("\n\n\n\n----------------------------------NOW AT ITERATION STEP: %d ---------------------------\n\n\n\n\n" % (i))
+            # print("CURRENT CENTROIDS\n\n")
+            # print(self.centroids)
+            # print("\n\n\n CURRENT CLUSTERS\n\n")
+            # print(self.clusters)
             self.clusters = {}
 
             for k in range(self.k):
@@ -111,10 +111,10 @@ class KMeans:
 
             #first, we need to make a copy of the centroids so that we can compare how much they move after recalculation
             oldCentroids = dict(self.centroids)
-            print("\n\n\n old centroid dictionary")
+            # print("\n\n\n old centroid dictionary")
 
-            print(oldCentroids)
-            print("\n\n\n")
+            # print(oldCentroids)
+            # print("\n\n\n")
             #We need to recalculate centroids now --> taking the average
             sum = {}
 
@@ -130,32 +130,32 @@ class KMeans:
                     dim = 0
                     for interval in minMaxList :
                         randomPoint = random.uniform(interval[0], interval[1])
-                        print("\n\n\n\nRANDOM POINT")
-                        print(randomPoint)
-                        print(self.centroids[centroid])
+                        # print("\n\n\n\nRANDOM POINT")
+                        # print(randomPoint)
+                        # print(self.centroids[centroid])
                         self.centroids[centroid][dim] = randomPoint
                         dim += 1
                 else:
 
-                    print("Number of Points in the old centroid: %s" % (numPoints))
-                    print("\n\n\nOld centroid points")
+                    # print("Number of Points in the old centroid: %s" % (numPoints))
+                    # print("\n\n\nOld centroid points")
 
 
-                    print(self.clusters[centroid])
+                    # print(self.clusters[centroid])
                     for data in self.clusters[centroid]:
 
                         for index in range (1, numDim + 1):
                            sum[centroid][index - 1] += float(data[index])
 
                     averageOfCentroid = [x / numPoints for x in sum[centroid]]
-                    print("\n\n\nSUM OF NEW CENTROID")
-                    print(sum[centroid])
-                    print("\n\n\nAVERAGE OF NEW CENTROID")
-                    print(averageOfCentroid)
+                    # print("\n\n\nSUM OF NEW CENTROID")
+                    # print(sum[centroid])
+                    # print("\n\n\nAVERAGE OF NEW CENTROID")
+                    # print(averageOfCentroid)
                     self.centroids[centroid] = averageOfCentroid
 
-            print(oldCentroids)
-            print(self.centroids)
+            # print(oldCentroids)
+            # print(self.centroids)
 
             #now we test if the centroids have moved more than the self.tolerance (if we are converging)
 
@@ -195,7 +195,7 @@ class KMeans:
                 plot.scatter(features[1], features[2], color = color, s = 30)
                 '''
                 
-        plot.show()
+        # plot.show()
 
         #function to determine best number of K means --> via k means from 1 to kmax
         #elbow method using WWS, within-cluster-sum of squaured errors
@@ -215,10 +215,10 @@ def WSS(kmax, DF, NP):
                 currentsse += euclideanDistance(centroids[centroid], point[1:])
 
         sse.append(currentsse)
-    print("\n\n\nSSE:")
-    print(sse)
+    # print("\n\n\nSSE:")
+    # print(sse)
 
-    plot.plot(range(1, kmax + 1), sse, 'bx-')
+    # plot.plot(range(1, kmax + 1), sse, 'bx-')
     # plot.show()
     return sse
 
@@ -233,7 +233,8 @@ def main(validation):
     WSS(7, DF, NP)
     test = KMeans(4, 0.00001, 100)
     test.cluster(DF, NP)
-    test.plotting(NP)
+    # test.plotting(NP)
+    return test.clusters
 
 # if __name__ == "__main__":
 #     main()

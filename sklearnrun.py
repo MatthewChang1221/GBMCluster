@@ -54,11 +54,11 @@ def plotSKLearn(labels):
 
     fig = plt.figure()
     ax = Axes3D(fig)
-    ax.scatter(type0['PC1'], type0['PC2'], type0['PC3'], color = 'g', s = 30)
-    ax.scatter(type1['PC1'], type1['PC2'], type1['PC3'], color = 'b', s = 30)
-    ax.scatter(type2['PC1'], type2['PC2'], type2['PC3'], color = 'r', s = 30)
-    ax.scatter(type3['PC1'], type3['PC2'], type3['PC3'], color = 'y', s = 30)
-    plt.show()
+    ax.scatter(type0['PC1'], type0['PC2'], type0['PC3'], color = 'r', s = 30)
+    ax.scatter(type1['PC1'], type1['PC2'], type1['PC3'], color = 'y', s = 30)
+    ax.scatter(type2['PC1'], type2['PC2'], type2['PC3'], color = 'b', s = 30)
+    ax.scatter(type3['PC1'], type3['PC2'], type3['PC3'], color = 'g', s = 30)
+    # plt.show()
 
 def compareresults(labels, subtype):
     subtypevals = []
@@ -111,8 +111,8 @@ def main():
     df = getdata()
     labels = runKmeans(df)
     subtypes = getsubtypes()
-    plotSKLearn(labels)
-    compareresults(labels, subtypes)
+    # plotSKLearn(labels)
+    return labels
 
 if __name__ == "__main__":
     main()

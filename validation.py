@@ -37,25 +37,21 @@ def plotreal(subtypedict):
 	
 	fig = plt.figure()
 	ax = Axes3D(fig)
-	ax.scatter(classical['PC1'], classical['PC2'], classical['PC3'], color = 'b', s = 30)
-	ax.scatter(mesenchymal['PC1'], mesenchymal['PC2'], mesenchymal['PC3'], color = 'r', s = 30)
-	ax.scatter(neural['PC1'], neural['PC2'], neural['PC3'], color = 'g', s = 30)
-	ax.scatter(proneural['PC1'], proneural['PC2'], proneural['PC3'], color = 'y', s = 30)
+	ax.scatter(classical['PC1'], classical['PC2'], classical['PC3'], color = 'y', s = 30)
+	ax.scatter(mesenchymal['PC1'], mesenchymal['PC2'], mesenchymal['PC3'], color = 'b', s = 30)
+	ax.scatter(neural['PC1'], neural['PC2'], neural['PC3'], color = 'r', s = 30)
+	ax.scatter(proneural['PC1'], proneural['PC2'], proneural['PC3'], color = 'g', s = 30)
 	
 	# plt.show()
 	plt.savefig('subtype_90.png')
 
 def main():
-	print('main')
-	# valid = PCA()
+	valid = PCA()
 	# valid.datareduction(True)
 	# valid.PCA90.to_csv('validationPCA90.csv')
 	# valid.PCA75.to_csv('validationPCA75.csv')
 	# valid.PCA50.to_csv('validationPCA50.csv')
-	# subtypedict = getsubtypes()
+	subtypedict = getsubtypes()
 	# plotreal(subtypedict)
-	kmeanscfluster.main(True)
-	print('done')
-
-if __name__ == "__main__":
-	main()
+	clusters = kmeanscluster.main(True)
+	return clusters, subtypedict

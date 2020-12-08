@@ -21,7 +21,7 @@ class PCA:
         df.drop(df.tail(1).index, inplace=True)
         df = df.set_index(['ID_REF'])
         df = df.transpose(copy=True)
-        print(df)
+        # print(df)
         '''
         print("\n\nNumber of features in the dataset :\n", '#' * 40)
         print("\nFeatures Set : \n", '-' * 20, len(df.columns))
