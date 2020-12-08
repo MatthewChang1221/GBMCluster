@@ -174,7 +174,7 @@ class KMeans:
                 break
 
     def plotting(self, data):
-        colors = 10 * ["r", "y", "b", "g"]
+        colors = 10 * ["r", "y", "b", "g", "c"]
         fig = plot.figure()
         ax = Axes3D(fig)
 
@@ -184,8 +184,8 @@ class KMeans:
             color = colors[data]
             for features in self.clusters[data]:
                 ax.scatter(features[1], features[2], features[3], color = color, s = 30)
-
-        '''2D PLOTTING
+        '''
+        2D PLOTTING
         for centroid in self.centroids:
             plot.scatter(self.centroids[centroid][0], self.centroids[centroid][1], s = 130, marker = "x")
 
@@ -195,10 +195,29 @@ class KMeans:
                 plot.scatter(features[1], features[2], color = color, s = 30)
                 '''
                 
-        # plot.show()
+        plot.show()
 
         #function to determine best number of K means --> via k means from 1 to kmax
         #elbow method using WWS, within-cluster-sum of squaured errors
+
+    def saveresults(self):
+        cluster1 = [i[0] for i in self.clusters[1]]
+        cluster2 = [i[0] for i in self.clusters[2]]
+        cluster3 = [i[0] for i in self.clusters[3]]
+        cluster4 = [i[0] for i in self.clusters[4]]
+        cluster5 = [i[0] for i in self.clusters[5]]
+
+        clusters = {i : 0 for i in cluster1}
+        for i in cluster2:
+            clusters[i] = 1
+        for i in cluster3:
+            clusters[i] = 2
+        for i in cluster4:
+            clusters[i] = 3
+        for i in cluster5:
+            clusters[i] = 4
+        df = pd.DataFrame(clusters.items(), columns = ['samples','subtypes'])
+        df.to_csv('novel_results.csv')
 
 def WSS(kmax, DF, NP):
     sse = []
@@ -220,22 +239,25 @@ def WSS(kmax, DF, NP):
 
     plot.clf()
     plot.plot(range(1, kmax + 1), sse, 'bx-')
-    plot.savefig('elbow.png')
+    plot.show()
+    # plot.savefig('elbow.png')
     return sse
 
-
-
-def main(validation):
-    if validation:
+def main(*args):
+    if args:
         file = 'validationPCA90.csv'
+        DF, NP = importData(file)
+        test = KMeans(4, 0.00001, 100)
+        test.cluster(DF, NP)
+        return test.clusters
     else:
-        file = 'PCA90.csv'
-    DF, NP = importData(file)
-    WSS(7, DF, NP)
-    test = KMeans(4, 0.00001, 100)
-    test.cluster(DF, NP)
-    # test.plotting(NP)
-    return test.clusters
+        file = 'PCA50.csv'
+        DF, NP = importData(file)
+        WSS(7, DF, NP)
+        test = KMeans(5, 0.00001, 100)
+        test.cluster(DF, NP)
+        test.plotting(NP)
+        test.saveresults()
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()

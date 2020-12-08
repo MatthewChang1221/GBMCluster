@@ -10,13 +10,13 @@ class PCA:
         self.PCA75 = None
         self.PCA90 = None
 
-    def datareduction(self, validation):
-        if not validation:
-            file = 'GSE7696_series_matrix.txt'
-            skip = 93
-        if validation:
+    def datareduction(self, *args):
+        if args:
             file = 'validation_GSE72951_series_matrix.txt'
             skip = 83
+        else:
+            file = 'GSE7696_series_matrix.txt'
+            skip = 93
         df = pd.read_csv(file, delimiter='\t', skiprows=skip)
         df.drop(df.tail(1).index, inplace=True)
         df = df.set_index(['ID_REF'])
@@ -60,7 +60,7 @@ class PCA:
         # Feature Filtering : Removing features with less than x variance
         from sklearn.feature_selection import VarianceThreshold
 
-        if validation:
+        if args:
             selector_50 = VarianceThreshold(0.3241)  # Threshold that keeps 50%, 75%, 90% for LABELED data
             selector_75 = VarianceThreshold(0.6935)
             # selector_90 = VarianceThreshold(0.9618) 85%

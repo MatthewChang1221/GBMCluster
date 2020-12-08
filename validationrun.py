@@ -203,6 +203,10 @@ def main():
 		df = fromclusters(df, algoclusters, skclusters)
 		for i in range(0, 2):
 			df, loop = match(df, i, loop)
+	# print(sum(value == 'Classical' for value in subtypedict.values()))
+	# print(sum(value == 'Mesenchymal' for value in subtypedict.values()))
+	# print(sum(value == 'Proneural' for value in subtypedict.values()))
+	# print(sum(value == 'Neural' for value in subtypedict.values()))
 	coords = getcoords()
 	graphs(df, coords)
 	analysis(df)
