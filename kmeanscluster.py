@@ -174,31 +174,41 @@ class KMeans:
                 break
 
     def plotting(self, data):
-        colors = 10 * ["r", "y", "b", "g", "c"]
+        colors = 10 * ["r", "g", "c", "b", "k"]
+        #print(colors)
         fig = plot.figure()
+
+        """3D PLOTTING """
         ax = Axes3D(fig)
 
         for centroid in self.centroids:
-            ax.scatter(self.centroids[centroid][0], self.centroids[centroid][1], self.centroids[centroid][2],  marker = "x")
+            color = colors[centroid]
+            ax.scatter(self.centroids[centroid][0], self.centroids[centroid][1], self.centroids[centroid][2], color = color,  marker = "x")
         for data in self.clusters:
             color = colors[data]
             for features in self.clusters[data]:
                 ax.scatter(features[1], features[2], features[3], color = color, s = 30)
-        '''
-        2D PLOTTING
+
+        ax.set_xlabel("PCA 1", fontsize = 12)
+        ax.set_ylabel("PCA 2", fontsize = 12)
+        ax.set_zlabel("PCA 3", fontsize = 12)
+
+
+        """  2D PLOTTING
         for centroid in self.centroids:
-            plot.scatter(self.centroids[centroid][0], self.centroids[centroid][1], s = 130, marker = "x")
+            color = colors[centroid]
+            plot.scatter(self.centroids[centroid][0], self.centroids[centroid][1], s = 130, color - color, marker = "x")
 
         for data in self.clusters:
             color = colors[data]
             for features in self.clusters[data]:
                 plot.scatter(features[1], features[2], color = color, s = 30)
-                '''
-                
+                """
+
+
         plot.show()
 
-        #function to determine best number of K means --> via k means from 1 to kmax
-        #elbow method using WWS, within-cluster-sum of squaured errors
+
 
     def saveresults(self):
         cluster1 = [i[0] for i in self.clusters[1]]
@@ -219,6 +229,10 @@ class KMeans:
         df = pd.DataFrame(clusters.items(), columns = ['samples','subtypes'])
         df.to_csv('novel_results.csv')
 
+
+#function to determine best number of K means --> via k means from 1 to kmax
+#elbow method using WWS, within-cluster-sum of squaured errors
+
 def WSS(kmax, DF, NP):
     sse = []
     for k in range(1, kmax + 1):
@@ -237,8 +251,10 @@ def WSS(kmax, DF, NP):
     # print("\n\n\nSSE:")
     # print(sse)
 
-    plot.clf()
     plot.plot(range(1, kmax + 1), sse, 'bx-')
+    plot.xlabel('k, Number of Clusters', fontsize=12)
+    plot.ylabel('WSS', fontsize=12)
+
     plot.show()
     # plot.savefig('elbow.png')
     return sse
