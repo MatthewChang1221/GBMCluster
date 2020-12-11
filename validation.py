@@ -33,25 +33,25 @@ def getmeta():
 	survivaldict = {samples[i]: surv[i] for i in range(len(samples))}
 	return subtypedict, survivaldict
 
-def plotreal(subtypedict):
-	df = pd.read_csv('validationPCA90.csv')
-	df.rename(columns = {'Unnamed: 0':'Sample'}, inplace = True)
-	df['subtype'] = df['Sample'].map(subtypedict)
+# def plotreal(subtypedict):
+# 	df = pd.read_csv('validationPCA90.csv')
+# 	df.rename(columns = {'Unnamed: 0':'Sample'}, inplace = True)
+# 	df['subtype'] = df['Sample'].map(subtypedict)
 
-	classical = df.loc[df['subtype'] == 'Classical']
-	mesenchymal = df.loc[df['subtype'] == 'Mesenchymal']
-	neural = df.loc[df['subtype'] == 'Neural']
-	proneural = df.loc[df['subtype'] == 'Proneural']
+# 	classical = df.loc[df['subtype'] == 'Classical']
+# 	mesenchymal = df.loc[df['subtype'] == 'Mesenchymal']
+# 	neural = df.loc[df['subtype'] == 'Neural']
+# 	proneural = df.loc[df['subtype'] == 'Proneural']
 	
-	fig = plt.figure()
-	ax = Axes3D(fig)
-	ax.scatter(classical['PC1'], classical['PC2'], classical['PC3'], color = 'y', s = 30)
-	ax.scatter(mesenchymal['PC1'], mesenchymal['PC2'], mesenchymal['PC3'], color = 'b', s = 30)
-	ax.scatter(neural['PC1'], neural['PC2'], neural['PC3'], color = 'r', s = 30)
-	ax.scatter(proneural['PC1'], proneural['PC2'], proneural['PC3'], color = 'g', s = 30)
+# 	fig = plt.figure()
+# 	ax = Axes3D(fig)
+# 	ax.scatter(classical['PC1'], classical['PC2'], classical['PC3'], color = 'y', s = 30)
+# 	ax.scatter(mesenchymal['PC1'], mesenchymal['PC2'], mesenchymal['PC3'], color = 'b', s = 30)
+# 	ax.scatter(neural['PC1'], neural['PC2'], neural['PC3'], color = 'r', s = 30)
+# 	ax.scatter(proneural['PC1'], proneural['PC2'], proneural['PC3'], color = 'g', s = 30)
 	
-	# plt.show()
-	plt.savefig('subtype_90.png')
+# 	# plt.show()
+# 	plt.savefig('subtype_90.png')
 
 def main():
 	valid = PCA()

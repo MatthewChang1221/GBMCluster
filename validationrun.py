@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import scipy.stats as stats
-from statistics import mean, stdev
+from statistics import mean, variance, median
 
 def fromclusters(df, algoclusters, skclusters):
 	cluster1 = [i[0] for i in algoclusters[1]]
@@ -86,7 +86,8 @@ def graphs(df, coords):
 	ax.set_ylabel('PCA2', rotation=60)
 	ax.set_zlabel('PCA3', rotation=90)
 	fig.suptitle('Known Subtypes', fontsize=12)
-	plt.savefig('validation_subtype.png')
+	plt.show()
+	# plt.savefig('validation_subtype.png')
 
 	novel0 = coords.loc[coords['Sample'].isin(df['samples'].loc[df['novel'] == 0].tolist())]
 	novel1 = coords.loc[coords['Sample'].isin(df['samples'].loc[df['novel'] == 1].tolist())]
@@ -103,7 +104,8 @@ def graphs(df, coords):
 	ax.set_ylabel('PCA2', rotation=60)
 	ax.set_zlabel('PCA3', rotation=90)
 	plt.legend(loc="upper left")
-	plt.savefig('validation_novel.png')
+	plt.show()
+	# plt.savefig('validation_novel.png')
 
 	sk0 = coords.loc[coords['Sample'].isin(df['samples'].loc[df['sklearn'] == 0].tolist())]
 	sk1 = coords.loc[coords['Sample'].isin(df['samples'].loc[df['sklearn'] == 1].tolist())]
@@ -120,7 +122,8 @@ def graphs(df, coords):
 	ax.set_ylabel('PCA2', rotation=60)
 	ax.set_zlabel('PCA3', rotation=90)
 	plt.legend(loc="upper left")
-	plt.savefig('validation_sklearn.png')
+	plt.show()
+	# plt.savefig('validation_sklearn.png')
 
 def analysis(df):
 	match = 0
@@ -131,9 +134,10 @@ def analysis(df):
 	skincorrect = sum(df['subtypes'] != df['sklearn'])
 	same = sum(df['novel'] == df['sklearn'])
 	diff = sum(df['novel'] != df['sklearn'])
-	print('NOVEL: ', 'Correct:', novelcorrect, 'Incorrect:', novelincorrect, '% Correct: ', (novelincorrect/(novelcorrect+novelincorrect))*100, '%')
+	print("----Accuracy of K-means Algorithms----")
+	print('NOVEL: ', 'Correct:', novelcorrect, 'Incorrect:', novelincorrect, '% Correct: ', (novelcorrect/(novelcorrect+novelincorrect))*100, '%')
 	print('SK: ', 'Correct:', skcorrect, 'Incorrect:', skincorrect, '% Correct: ', (skcorrect/(skcorrect+skincorrect))*100, '%')
-	print('Compare: ', 'same: ', same, 'diff: ', diff)
+	# print('Compare: ', 'same: ', same, 'diff: ', diff)
 	df = df.replace({0: 'classical'})
 	df = df.replace({1: 'mesenchymal'})
 	df = df.replace({2: 'neural'})
@@ -153,7 +157,7 @@ def analysis(df):
 			else:
 				rates[df[col][i]]['overpredicted'] += 1
 				rates[df['subtypes'][i]]['missed'] += 1
-		print(col, ": ", rates)
+		# print(col, ": ", rates)
 
 def getSamples(df, val, survivaldict):
 	if val == 0:
@@ -166,31 +170,57 @@ def getSamples(df, val, survivaldict):
 	mlist = df.loc[df[col] == 1, 'samples']
 	nlist = df.loc[df[col] == 2, 'samples']
 	plist = df.loc[df[col] == 3, 'samples']
+	
 	cvals = [float(survivaldict[i]) for i in clist if (float(survivaldict[i]) > 0)]
 	mvals = [float(survivaldict[i]) for i in mlist if (float(survivaldict[i]) > 0)]
 	nvals = [float(survivaldict[i]) for i in nlist if (float(survivaldict[i]) > 0)]
 	pvals = [float(survivaldict[i]) for i in plist if (float(survivaldict[i]) > 0)]
+
+	# print(min(cvals), max(cvals), median(cvals))
+	# print(min(mvals), max(mvals), median(mvals))
+	# print(min(nvals), max(nvals), median(nvals))
+	# print(min(pvals), max(pvals), median(pvals))
+
+	print("----Signficance tests----")
+	# bartlett for equal variance 
+	bartf, bartp = stats.bartlett(cvals, mvals, nvals, pvals)
+	print("Bartlett's test: p-value = ", bartp)
+	# one-way anova for significant differences in mean -> ASSUMES equal variance
+	anovaf, anovap = stats.f_oneway(cvals, mvals, nvals, pvals)
+	print("ANOVA test: p-value = ", anovap)
+	# kruskal doesnt assume equal variance
+	krusf, krusp = stats.kruskal(cvals, mvals, nvals, pvals)
+	print("Kruskal test: p-value = ", krusp)
+
+	plt.clf()
+	plt.boxplot([cvals, mvals, nvals, pvals])
+	plt.show()
+	# name = col + "_bp.png"
+	# plt.savefig(name)
+
 	cmean = mean(cvals)
 	mmean = mean(mvals)
 	nmean = mean(nvals)
 	pmean = mean(pvals)
-	cstd = stdev(cvals)
-	mstd = stdev(mvals)
-	nstd = stdev(nvals)
-	pstd = stdev(pvals)
+	cstd = variance(cvals)
+	mstd = variance(mvals)
+	nstd = variance(nvals)
+	pstd = variance(pvals)
 
 	return cmean, mmean, nmean, pmean, cstd, mstd, nstd, pstd
 	
 
 def survivalanalysis(df, survivaldict):
 	cmean, mmean, nmean, pmean, cstd, mstd, nstd, pstd = getSamples(df, 0, survivaldict)
-	novelcmean, novelmmean, novelnmean, novelpmean, novelcstd, novelmstd, novelnstd, novelpstd = getSamples(df, 1, survivaldict)
-	skcmean, skmmean, sknmean, skpmean, skcstd, skmstd, sknstd, skpstd = getSamples(df, 2, survivaldict)
+	# novelcmean, novelmmean, novelnmean, novelpmean, novelcstd, novelmstd, novelnstd, novelpstd = getSamples(df, 1, survivaldict)
+	# skcmean, skmmean, sknmean, skpmean, skcstd, skmstd, sknstd, skpstd = getSamples(df, 2, survivaldict)
+	print("----Mean survival by subtype----")
 	print('Given survival (months): ', 'C: ', cmean, 'M: ', mmean, 'N: ', nmean, 'P: ', pmean)
-	print('Novel survival (months): ', 'C: ', novelcmean, 'M: ', novelmmean, 'N: ', novelnmean, 'P: ', novelpmean)
-	print('Sklearn survival (months): ', 'C: ', skcmean, 'M: ', skmmean, 'N: ', sknmean, 'P: ', skpmean)
-	print('Differences (novel): ', 'C: ', cmean-novelcmean, 'M: ', mmean-novelmmean, 'N: ', nmean-novelnmean, 'P: ', pmean-novelpmean)
-	print('Differences (sklearn): ', 'C: ', cmean-skcmean, 'M: ', mmean-skmmean, 'N: ', nmean-sknmean, 'P: ', pmean-skpmean)
+	# print(cstd, mstd, nstd, pstd)
+	# print('Novel survival (months): ', 'C: ', novelcmean, 'M: ', novelmmean, 'N: ', novelnmean, 'P: ', novelpmean)
+	# print('Sklearn survival (months): ', 'C: ', skcmean, 'M: ', skmmean, 'N: ', sknmean, 'P: ', skpmean)
+	# print('Differences (novel): ', 'C: ', cmean-novelcmean, 'M: ', mmean-novelmmean, 'N: ', nmean-novelnmean, 'P: ', pmean-novelpmean)
+	# print('Differences (sklearn): ', 'C: ', cmean-skcmean, 'M: ', mmean-skmmean, 'N: ', nmean-sknmean, 'P: ', pmean-skpmean)
 
 
 def main():
