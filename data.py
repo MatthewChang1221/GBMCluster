@@ -25,22 +25,22 @@ class PCA:
         '''
         print("\n\nNumber of features in the dataset :\n", '#' * 40)
         print("\nFeatures Set : \n", '-' * 20, len(df.columns))
-        
+
         # print("\n\nFeatures in the dataset :\n", '#' * 40)
         # print("\nFeatures Set : \n", list(df.columns))
-        
+
         print("\n\nDatatypes of features and labels in the dataset :\n", '#' * 40)
         print("\nFeatures Set : \n", '-' * 20, "\n", df.dtypes)
-        
+
         print("\n\nNumber of observations in the dataset :\n", '#' * 40)
         print("\nFeatures Set : \n", '-' * 20, len(df))
-        
+
         print("\n\nEmpty cells or Nans in the dataset :\n", '#' * 40)
         print("\nFeatures Set : \n", '-' * 20, df.isnull().values.any())
-        
+
         print("\n\nNumber of empty cells or Nans in the dataset :\n", '#' * 40)
         print("\nFeatures Set : \n", '-' * 20, "\n", df.isnull().sum())
-        
+
         print("\n\nRange of data :\n", '#' * 40)
         # print("\nFeatures Set : \n", '-' * 20, "\n", df.apply(lambda x: round(x.max()-x.min())).to_string())
         '''
@@ -95,6 +95,8 @@ class PCA:
         self.PCA75 = pd.DataFrame(pca_GCM_75, columns=['PC1', 'PC2', 'PC3'],index=df_75.index)
         self.PCA90 = pd.DataFrame(pca_GCM_90, columns=['PC1', 'PC2', 'PC3'],index=df_90.index)
 
+        self.PCA50.to_csv("PCA50.csv", index = True)
+
         # print('Explained variation per principal component: {}'.format(pca.explained_variance_ratio_)) # this for the 90%
 
         # To plot just uncomment and change the value of the df to the variation level you want
@@ -118,7 +120,7 @@ class PCA:
             plt.savefig('GSE7696_PCA.png')
         plt.clf()
 
-        
+
         pca2 = PCA().fit(x)
         plt.scatter([x for x in range(len(pca2.explained_variance_ratio_))], pca2.explained_variance_ratio_)
         plt.xlabel('number of components')
@@ -129,7 +131,7 @@ class PCA:
         else:
             plt.savefig('GSE7696_explained_var.png')
         plt.clf()
-    
+
         correlation = df.corr()
         ax = sns.heatmap(correlation,
                          vmin=-1,
@@ -141,5 +143,3 @@ class PCA:
         plt.title('Heatmap of 22 Most Varied Probe Sets based on Correlations', fontsize=20)
         plt.show()
         '''
-        
-
