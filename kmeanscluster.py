@@ -209,27 +209,6 @@ class KMeans:
         plot.show()
 
 
-
-    def saveresults(self):
-        cluster1 = [i[0] for i in self.clusters[1]]
-        cluster2 = [i[0] for i in self.clusters[2]]
-        cluster3 = [i[0] for i in self.clusters[3]]
-        cluster4 = [i[0] for i in self.clusters[4]]
-        cluster5 = [i[0] for i in self.clusters[5]]
-
-        clusters = {i : 0 for i in cluster1}
-        for i in cluster2:
-            clusters[i] = 1
-        for i in cluster3:
-            clusters[i] = 2
-        for i in cluster4:
-            clusters[i] = 3
-        for i in cluster5:
-            clusters[i] = 4
-        df = pd.DataFrame(clusters.items(), columns = ['samples','subtypes'])
-        df.to_csv('novel_results.csv')
-
-
 #function to determine best number of K means --> via k means from 1 to kmax
 #elbow method using WWS, within-cluster-sum of squaured errors
 
@@ -273,7 +252,6 @@ def main(*args):
         test = KMeans(5, 0.00001, 100)
         test.cluster(DF, NP)
         test.plotting(NP)
-        test.saveresults()
 
 if __name__ == "__main__":
     main()
