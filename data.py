@@ -103,17 +103,18 @@ class PCA:
 
         pca_GCM_df = self.PCA90
         '''
-        plt.figure(figsize=(10, 10))
-        plt.xticks(fontsize=12)
-        plt.yticks(fontsize=14)
-        plt.xlabel('Principal Component 1', fontsize=20)
-        plt.ylabel('Principal Component 2', fontsize=20)
+        from mpl_toolkits import mplot3d
+        fig = plt.figure()
+        ax = plt.axes(projection='3d')
+        ax.scatter3D(pca_GCM_df['PC1'], spca_GCM_df['PC2'], pca_GCM_df['PC3'], c ='purple');
+        ax.set_xlabel('Principal Component 1')
+        ax.set_ylabel('Principal Component 2')
+        ax.set_zlabel('Principal Component 3');
         if validation:
             plt.title('PCA of GSE72951 Genes for GBM', fontsize=20)
         else:
             plt.title('PCA of GSE7696 Genes for GBM', fontsize=20)
-        plt.scatter(pca_GCM_df['PC1'], pca_GCM_df['PC2'])
-        # plt.show()
+        plt.show()
         if validation:
             plt.savefig('validation_PCA.png')
         else:
@@ -125,7 +126,7 @@ class PCA:
         plt.scatter([x for x in range(len(pca2.explained_variance_ratio_))], pca2.explained_variance_ratio_)
         plt.xlabel('number of components')
         plt.ylabel('explained variance')
-        # plt.show()
+        plt.show()
         if validation:
             plt.savefig('validation_explained_var.png')
         else:
@@ -138,8 +139,10 @@ class PCA:
                          vmax=1,
                          center=0,
                          cmap=sns.diverging_palette(20, 220, n=200),
-                         square=True)
+                         square=False)
         ax.set_xticklabels(ax.get_xticklabels(), rotation=45, horizontalalignment='right');
+        ax.set_xlabel('Gene Probe ID')
+        ax.set_ylabel('Gene Probe ID')
         plt.title('Heatmap of 22 Most Varied Probe Sets based on Correlations', fontsize=20)
         plt.show()
         '''
